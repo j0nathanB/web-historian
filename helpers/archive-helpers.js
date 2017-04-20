@@ -22,31 +22,23 @@ exports.readListOfUrls = function(callback) {
   var list = '';
   var stream = fs.createReadStream( exports.paths.list );
 
-    stream.on('data', (data) => {
-      list += data
-    });
-
-    stream.on('end', () => {
-      var sites = list.split('\n');
-      callback(sites);
-      // sites.forEach((site) => {
-      //   console.log(site);
-      //   callback(site) 
-      // });
-    });
+  stream.on('data', (data) => {
+    list += data;
+  });
+  stream.on('end', () => {
+    var sites = list.split('\n');
+    callback(sites);
+  });
 };
 
-
 exports.isUrlInList = function(url, callback) {
-  
-  // if (exports.paths.list.includes(url)) {
-  //  // callback(res, xx, xx)
-  //  console.log('url: ' + url + ' is in list');
-  
-  // } else {
-  //  console.log('url: ' + url + ' is not in list');
-  //  exports.addUrlToList(url, callback)
-  // }
+  var result;
+
+  exports.readListOfUrls( (x) => {
+    result = x.includes(url);
+    console.log('result: ', result);
+    callback(result);
+  });
 
 };
 
