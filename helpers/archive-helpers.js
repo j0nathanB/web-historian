@@ -36,15 +36,21 @@ exports.isUrlInList = function(url, callback) {
 
   exports.readListOfUrls( (x) => {
     result = x.includes(url);
-    console.log('result: ', result);
     callback(result);
   });
 
 };
 
 exports.addUrlToList = function(url, callback) {
-  //add url to list
-  // callback(res);
+
+  fs.writeFile( exports.paths.list, url + '\n', function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  callback();
+
 };
 
 exports.isUrlArchived = function(url, callback) {
