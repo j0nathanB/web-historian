@@ -54,14 +54,14 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-  // if (exports.paths.archivedSites.includes(url)) {
-  //  console.log('url: ' + url + ' is archived');
-  //  return true;
+  var result;
   
-  // } else {
-  //  console.log('url: ' + url + ' is not archived');
-  //  exports.isUrlInList(url, callback)
-  // }
+  fs.readdir(exports.paths.archivedSites, (err, files) => {
+    result = files.includes(url);
+    callback(result);
+    console.log(files);
+  });
+
 };
 
 exports.downloadUrls = function(urls) {

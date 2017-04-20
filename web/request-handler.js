@@ -14,7 +14,6 @@ exports.handleRequest = function (req, res) {
 
 
   if (method === 'GET' && search === '/') {
-    console.log('hardcoded get option');
     var body = '';
     var stream = fs.createReadStream( archive.paths.siteAssets + '/index.html' );
 
@@ -27,8 +26,6 @@ exports.handleRequest = function (req, res) {
     });
 
   
-
-
   } else if (method === 'POST') {
     var incomingMessage = '';
 
@@ -37,7 +34,6 @@ exports.handleRequest = function (req, res) {
     });
 
     req.on('end', function() {
-      console.log('incoming data complete');
       var url = incomingMessage.slice(incomingMessage.indexOf('=') + 1);
 
       fs.writeFile(archive.paths.list, url + '\n', function(err) {
@@ -48,21 +44,8 @@ exports.handleRequest = function (req, res) {
 
       res.writeHead(302, httpHelper.headers);
       res.end();
-
     });
-
-
-
-    // console.log('request URL: ' + JSON.stringify(req));
-    // fs.writeFile( archive.paths.list, search + '\n', function(err) {
-    //  if(err) {
-    //    return console.log(err);
-    //  }
-    // });
-
-
-    // res.writeHead(302, httpHelper.headers);
-    // res.end();
+    
 
   } else {
     res.writeHead(404, httpHelper.headers);
