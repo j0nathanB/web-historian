@@ -19,36 +19,51 @@ exports.paths = {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
+  var list = '';
+  var stream = fs.createReadStream( exports.paths.list );
+
+    stream.on('data', (data) => {
+      list += data
+    });
+
+    stream.on('end', () => {
+      var sites = list.split('\n');
+      callback(sites);
+      // sites.forEach((site) => {
+      //   console.log(site);
+      //   callback(site) 
+      // });
+    });
 };
 
 
 exports.isUrlInList = function(url, callback) {
-	
-	// if (exports.paths.list.includes(url)) {
-	// 	// callback(res, xx, xx)
-	// 	console.log('url: ' + url + ' is in list');
-	
-	// } else {
-	// 	console.log('url: ' + url + ' is not in list');
-	// 	exports.addUrlToList(url, callback)
-	// }
+  
+  // if (exports.paths.list.includes(url)) {
+  //  // callback(res, xx, xx)
+  //  console.log('url: ' + url + ' is in list');
+  
+  // } else {
+  //  console.log('url: ' + url + ' is not in list');
+  //  exports.addUrlToList(url, callback)
+  // }
 
 };
 
 exports.addUrlToList = function(url, callback) {
-	//add url to list
-	// callback(res);
+  //add url to list
+  // callback(res);
 };
 
 exports.isUrlArchived = function(url, callback) {
-	// if (exports.paths.archivedSites.includes(url)) {
-	// 	console.log('url: ' + url + ' is archived');
-	// 	return true;
-	
-	// } else {
-	// 	console.log('url: ' + url + ' is not archived');
-	// 	exports.isUrlInList(url, callback)
-	// }
+  // if (exports.paths.archivedSites.includes(url)) {
+  //  console.log('url: ' + url + ' is archived');
+  //  return true;
+  
+  // } else {
+  //  console.log('url: ' + url + ' is not archived');
+  //  exports.isUrlInList(url, callback)
+  // }
 };
 
 exports.downloadUrls = function(urls) {

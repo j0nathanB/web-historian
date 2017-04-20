@@ -14,60 +14,59 @@ exports.handleRequest = function (req, res) {
 
 
   if (method === 'GET' && search === '/') {
-  	console.log('hardcoded get option');
-  	var body = '';
-  	var stream = fs.createReadStream( archive.paths.siteAssets + '/index.html' );
+    console.log('hardcoded get option');
+    var body = '';
+    var stream = fs.createReadStream( archive.paths.siteAssets + '/index.html' );
 
-  	stream.on('data', (data) => body += data);
+    stream.on('data', (data) => body += data);
 
-  	stream.on('end', () => {
-  		console.log('stream ended!');
-	  	res.writeHead(200, httpHelper.headers);
-	  	res.end(body);
-  	});
+    stream.on('end', () => {
+      console.log('stream ended!');
+      res.writeHead(200, httpHelper.headers);
+      res.end(body);
+    });
 
   
 
 
   } else if (method === 'POST') {
-  	var incomingMessage = '';
+    var incomingMessage = '';
 
-  	req.on('data', function (data) {
-     incomingMessage += data;
-   	});
+    req.on('data', function (data) {
+      incomingMessage += data;
+    });
 
-   	req.on('end', function() {
-   	 console.log('incoming data complete');
-   	 var url = incomingMessage.slice(incomingMessage.indexOf('=') + 1);
-   	 console.log('url: ' + url);
+    req.on('end', function() {
+      console.log('incoming data complete');
+      var url = incomingMessage.slice(incomingMessage.indexOf('=') + 1);
 
-     fs.writeFile(archive.paths.list, url + '\n', function(err) {
-     	if (err) {
-     		console.log(err);
-     	}
-     });
+      fs.writeFile(archive.paths.list, url + '\n', function(err) {
+        if (err) {
+          console.log(err);
+        }
+      });
 
-     res.writeHead(302, httpHelper.headers);
-     res.end();
+      res.writeHead(302, httpHelper.headers);
+      res.end();
 
-   });
-
+    });
 
 
-  	// console.log('request URL: ' + JSON.stringify(req));
-  	// fs.writeFile( archive.paths.list, search + '\n', function(err) {
-  	// 	if(err) {
-  	// 		return console.log(err);
-  	// 	}
-  	// });
+
+    // console.log('request URL: ' + JSON.stringify(req));
+    // fs.writeFile( archive.paths.list, search + '\n', function(err) {
+    //  if(err) {
+    //    return console.log(err);
+    //  }
+    // });
 
 
-  	// res.writeHead(302, httpHelper.headers);
-  	// res.end();
+    // res.writeHead(302, httpHelper.headers);
+    // res.end();
 
   } else {
-  	res.writeHead(404, httpHelper.headers);
-  	res.end();
+    res.writeHead(404, httpHelper.headers);
+    res.end();
   }
 
 };
@@ -81,15 +80,15 @@ exports.handleRequest = function (req, res) {
   //get request's method(all POST?)
 
   //check if url we're searching for is in the archive
-  	//isUrlArchived(req.url, ???)
-  	//isUrlInList
+    //isUrlArchived(req.url, ???)
+    //isUrlInList
 
 
 
   // use archive helper to trawl archive
-  	// if page not in archive 
-  		//-> add url to list for retrieval
-  		//use serveAssets to serve up loading.html page
-  	// if page in archive 
-  		//-> serve up to client
-  		// use serveAssets to send requested page data
+    // if page not in archive 
+      //-> add url to list for retrieval
+      //use serveAssets to serve up loading.html page
+    // if page in archive 
+      //-> serve up to client
+      // use serveAssets to send requested page data
