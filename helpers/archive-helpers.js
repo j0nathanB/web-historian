@@ -50,41 +50,39 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-  //////////////////////////////
-  //pretty much copied isUrlInList
   var result;
   
-  return fs.readdir(exports.paths.archivedSites, (err, files) => {
-    result = files.includes(url);
-    //modified this to return true/false if no callback, but doesn't work
-    return callback ? callback(result) : result;
+  fs.readdir(exports.paths.archivedSites, (err, files) => {
+    console.log(files.includes(url));
+    return callback ? callback(files.includes(url)) : files.includes(url);
+    // console.log('**Files** '+ files);
+    //modified this to return true/false if no callback, but doesn't seem to work
+  // console.log('*** result: ' + result);
+  // return callback ? callback(result) : result;
   });
+  // console.log(result);
 
 };
 
 exports.downloadUrls = function(urls) {
-  ///////////////////////////////////////////////
-  //
-
-  var writeTo = exports.paths.archivedSites;
-  console.log(urls.length);
+  var writePath = exports.paths.archivedSites;
   
-  urls.forEach((url) => {
-    var alreadyInFolder = exports.isUrlArchived(url, () => {});
-
-    console.log(url + ' is alreadyInFolder ? ' + alreadyInFolder)
+  urls.forEach( (url) => {
+    var alreadyInFolder = exports.isUrlArchived(url);
+    console.log(url + 'is alreadyInFolder ? ' + alreadyInFolder);
     if (!alreadyInFolder) {
       console.log('adding: ' + url);
       
-      fs.writeFile(writeTo, url, (err) => {
-        return console.log(err);
+      fs.writeFile(writePath + '/' + url, url, (err) => {
+        if (err) { 
+          console.log(err); 
+        } else { 
+          console.log('file written to: ' + writePath + '/' + url); 
+        }
       });
-
-      console.log('file written!');
     }
 
   });
-/////////////////////////////////////////
 };
 
 
