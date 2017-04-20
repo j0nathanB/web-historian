@@ -15,27 +15,50 @@ exports.paths = {
   list: path.join(__dirname, '../archives/sites.txt')
 };
 
-// Used for stubbing paths for tests, do not modify
-exports.initialize = function(pathsObj) {
-  _.each(pathsObj, function(path, type) {
-    exports.paths[type] = path;
-  });
-};
-
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
 };
 
+
 exports.isUrlInList = function(url, callback) {
+	
+	// if (exports.paths.list.includes(url)) {
+	// 	// callback(res, xx, xx)
+	// 	console.log('url: ' + url + ' is in list');
+	
+	// } else {
+	// 	console.log('url: ' + url + ' is not in list');
+	// 	exports.addUrlToList(url, callback)
+	// }
+
 };
 
 exports.addUrlToList = function(url, callback) {
+	//add url to list
+	// callback(res);
 };
 
 exports.isUrlArchived = function(url, callback) {
+	// if (exports.paths.archivedSites.includes(url)) {
+	// 	console.log('url: ' + url + ' is archived');
+	// 	return true;
+	
+	// } else {
+	// 	console.log('url: ' + url + ' is not archived');
+	// 	exports.isUrlInList(url, callback)
+	// }
 };
 
 exports.downloadUrls = function(urls) {
+};
+
+
+
+// Used for stubbing paths for tests, do not modify
+exports.initialize = function(pathsObj) {
+  _.each(pathsObj, function(path, type) {
+    exports.paths[type] = path;
+  });
 };
