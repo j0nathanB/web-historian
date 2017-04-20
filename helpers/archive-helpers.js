@@ -33,16 +33,13 @@ exports.readListOfUrls = function(callback) {
 
 exports.isUrlInList = function(url, callback) {
   var result;
-
   exports.readListOfUrls( (x) => {
     result = x.includes(url);
     callback(result);
   });
-
 };
 
 exports.addUrlToList = function(url, callback) {
-
   fs.writeFile( exports.paths.list, url + '\n', function(err) {
     if (err) {
       console.log(err);
@@ -50,21 +47,44 @@ exports.addUrlToList = function(url, callback) {
   });
 
   callback();
-
 };
 
 exports.isUrlArchived = function(url, callback) {
+  //////////////////////////////
+  //pretty much copied isUrlInList
   var result;
   
-  fs.readdir(exports.paths.archivedSites, (err, files) => {
+  return fs.readdir(exports.paths.archivedSites, (err, files) => {
     result = files.includes(url);
-    callback(result);
-    console.log(files);
+    //modified this to return true/false if no callback, but doesn't work
+    return callback ? callback(result) : result;
   });
 
 };
 
 exports.downloadUrls = function(urls) {
+  ///////////////////////////////////////////////
+  //
+
+  var writeTo = exports.paths.archivedSites;
+  console.log(urls.length);
+  
+  urls.forEach((url) => {
+    var alreadyInFolder = exports.isUrlArchived(url, () => {});
+
+    console.log(url + ' is alreadyInFolder ? ' + alreadyInFolder)
+    if (!alreadyInFolder) {
+      console.log('adding: ' + url);
+      
+      fs.writeFile(writeTo, url, (err) => {
+        return console.log(err);
+      });
+
+      console.log('file written!');
+    }
+
+  });
+/////////////////////////////////////////
 };
 
 
