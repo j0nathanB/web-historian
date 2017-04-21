@@ -3,6 +3,7 @@ var archive = require('../helpers/archive-helpers');
 var httpHelper = require('./http-helpers.js');
 var url = require('url');
 var fs = require('fs');
+var fetch = require('../workers/htmlfetcher.js');
 
 exports.handleRequest = function (req, res) {
   var method = req.method;
@@ -67,8 +68,7 @@ exports.handleRequest = function (req, res) {
 
       } else {
         console.log('url not in archive');
-
-
+        // archive.readListOfUrls(fetch.getWebsites());
         fs.readFile(archive.paths.siteAssets + '/loading.html', 'utf8', (err, data) => {
           if (err) {
             console.log(err);
