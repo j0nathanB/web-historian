@@ -33,7 +33,7 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.writeFile( exports.paths.list, url + '\n', function(err) {
+  fs.appendFile( exports.paths.list, url + '\n', {flags: 'a'}, function(err) {
     if (err) {
       console.log(err);
     }

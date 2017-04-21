@@ -6,7 +6,7 @@ var fs = require('fs');
 
 exports.handleRequest = function (req, res) {
   var method = req.method;
-  console.log('req.url: ' + req.url);
+  console.log('handing ' + method + ' request');
 
   if (method === 'GET' && req.url === '/') {
 
@@ -22,27 +22,33 @@ exports.handleRequest = function (req, res) {
     
   } else if (method === 'POST') {
     var incomingMessage = '';
-
     req.on('data', function (data) {
       incomingMessage += data;
     });
 
     req.on('end', function() {
       var url = incomingMessage.slice(incomingMessage.indexOf('=') + 1);
-      fs.writeFile(archive.paths.list, url + '\n', function(err) {
+      fs.appendFile(archive.paths.list, url + '\n', {flags: 'a'}, function(err) {
         if (err) {
           console.log(err);
         }
       });
 
-      res.writeHead(302, httpHelper.headers);
-      res.end();
+      fs.readFile(archive.paths.siteAssets + '/loading.html', 'utf8', (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        if (data) {
+          res.writeHead(302, httpHelper.headers);
+          res.end(data);
+        }
+      });
     });
     
 
   } else if (method === 'GET' && req.url !== '/') {
     var url = req.url.slice(1);
-
+    console.log('get req!');
 
     archive.isUrlArchived(url, function(result) {
       if (result) {
@@ -61,8 +67,17 @@ exports.handleRequest = function (req, res) {
 
       } else {
         console.log('url not in archive');
-        res.writeHead(404, httpHelper.headers);
-        res.end('Site doesnt exist');
+
+
+        fs.readFile(archive.paths.siteAssets + '/loading.html', 'utf8', (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          if (data) {
+            res.writeHead(404, httpHelper.headers);
+            res.end(data);
+          }
+        });
       }
     });
 
