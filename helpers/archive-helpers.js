@@ -19,24 +19,17 @@ exports.paths = {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
-  var list = '';
-  var stream = fs.createReadStream( exports.paths.list );
-
-  stream.on('data', (data) => {
-    list += data;
-  });
-  stream.on('end', () => {
-    var sites = list.split('\n');
-    callback(sites);
+  fs.readFile(exports.paths.list, 'utf8', (err, data) => {
+    if (err) { console.log('uh oh: ' + err); }
+    callback( data.split('\n') );
   });
 };
 
 exports.isUrlInList = function(url, callback) {
-  var result;
-  exports.readListOfUrls( (x) => {
-    result = x.includes(url);
-    callback(result);
+  exports.readListOfUrls(function(sites) {
+    callback( sites.includes(url) );
   });
+
 };
 
 exports.addUrlToList = function(url, callback) {
@@ -50,37 +43,35 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-  var result;
-  
-  fs.readdir(exports.paths.archivedSites, (err, files) => {
-    console.log(files.includes(url));
-    return callback ? callback(files.includes(url)) : files.includes(url);
-    // console.log('**Files** '+ files);
-    //modified this to return true/false if no callback, but doesn't seem to work
-  // console.log('*** result: ' + result);
-  // return callback ? callback(result) : result;
-  });
-  // console.log(result);
+  var url = url.slice(url.indexOf('/') + 1);
 
+  fs.readdir( exports.paths.archivedSites, 'utf8', (err, files) => {
+    if (err) {
+      console.log('error');
+    } else if (files) {
+      callback( files.includes(url) );
+    }
+  });
 };
 
 exports.downloadUrls = function(urls) {
   var writePath = exports.paths.archivedSites;
   
   urls.forEach( (url) => {
-    var alreadyInFolder = exports.isUrlArchived(url);
-    console.log(url + 'is alreadyInFolder ? ' + alreadyInFolder);
-    if (!alreadyInFolder) {
-      console.log('adding: ' + url);
-      
-      fs.writeFile(writePath + '/' + url, url, (err) => {
-        if (err) { 
-          console.log(err); 
-        } else { 
-          console.log('file written to: ' + writePath + '/' + url); 
-        }
-      });
-    }
+    console.log('URL: ' + url);
+    exports.isUrlArchived(url, function(item) {
+      if (item !== true) {
+        fs.writeFile(writePath + '/' + url, url, (err) => {
+          if (err) { 
+            console.log(err); 
+          } else { 
+            console.log('file written to: ' + writePath + '/' + url); 
+          }
+
+        });
+      }
+    });
+
 
   });
 };

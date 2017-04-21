@@ -3,29 +3,23 @@ var archive = require('../helpers/archive-helpers');
 var httpHelper = require('./http-helpers.js');
 var url = require('url');
 var fs = require('fs');
-// require more modules/folders here!
-
-//requre http helper
 
 exports.handleRequest = function (req, res) {
-  // res.end(archive.paths.list); 
   var method = req.method;
-  var search = url.parse(req.url).pathname;
+  console.log('req.url: ' + req.url);
 
+  if (method === 'GET' && req.url === '/') {
 
-  if (method === 'GET' && search === '/') {
-    var body = '';
-    var stream = fs.createReadStream( archive.paths.siteAssets + '/index.html' );
-
-    stream.on('data', (data) => body += data);
-
-    stream.on('end', () => {
-      console.log('stream ended!');
-      res.writeHead(200, httpHelper.headers);
-      res.end(body);
+    fs.readFile(archive.paths.siteAssets + '/index.html', 'utf8', (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      if (data) {
+        res.writeHead(200, httpHelper.headers);
+        res.end(data);
+      }
     });
-
-  
+    
   } else if (method === 'POST') {
     var incomingMessage = '';
 
@@ -35,7 +29,6 @@ exports.handleRequest = function (req, res) {
 
     req.on('end', function() {
       var url = incomingMessage.slice(incomingMessage.indexOf('=') + 1);
-
       fs.writeFile(archive.paths.list, url + '\n', function(err) {
         if (err) {
           console.log(err);
@@ -47,9 +40,32 @@ exports.handleRequest = function (req, res) {
     });
     
 
-  } else {
-    res.writeHead(404, httpHelper.headers);
-    res.end();
+  } else if (method === 'GET' && req.url !== '/') {
+    var url = req.url.slice(1);
+
+
+    archive.isUrlArchived(url, function(result) {
+      if (result) {
+        console.log('url is archived!');
+        fs.readFile(archive.paths.archivedSites + req.url, 'utf8', (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          if (data) {
+            res.writeHead(200, httpHelper.headers);
+            res.end(data);
+          }
+        });
+
+
+
+      } else {
+        console.log('url not in archive');
+        res.writeHead(404, httpHelper.headers);
+        res.end('Site doesnt exist');
+      }
+    });
+
   }
 
 };
